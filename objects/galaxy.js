@@ -13,13 +13,10 @@ export class Galaxy {
 
         this.scene = scene
 
-        this.stars = this.generateObject(NUM_STARS, (pos) => new Star(pos))
-        this.haze = this.generateObject(NUM_STARS * HAZE_RATIO, (pos) => new Haze(pos))
+        this.stars = []
+        this.haze = []
         this.customStars = []
         this.customStarsById = new Map()
-
-        this.stars.forEach((star) => star.toThreeObject(scene))
-        this.haze.forEach((haze) => haze.toThreeObject(scene))
 
         this.loadCustomStars()
     }
@@ -31,10 +28,25 @@ export class Galaxy {
             return
         }
 
-        if (data) {
+        if (data && data.length > 0) {
+            const numBackgroundStars = Math.max(1000, data.length * 100)
+
+            this.stars = this.generateObject(numBackgroundStars, (pos) => new Star(pos))
+            this.haze = this.generateObject(numBackgroundStars * HAZE_RATIO, (pos) => new Haze(pos))
+
+            this.stars.forEach((star) => star.toThreeObject(this.scene))
+            this.haze.forEach((haze) => haze.toThreeObject(this.scene))
+
             data.forEach(starData => {
                 this.addCustomStarFromData(starData)
             })
+        } else {
+            const defaultStars = 5000
+            this.stars = this.generateObject(defaultStars, (pos) => new Star(pos))
+            this.haze = this.generateObject(defaultStars * HAZE_RATIO, (pos) => new Haze(pos))
+
+            this.stars.forEach((star) => star.toThreeObject(this.scene))
+            this.haze.forEach((haze) => haze.toThreeObject(this.scene))
         }
     }
 
@@ -58,7 +70,7 @@ export class Galaxy {
     animateNewStar(starId) {
         const star = this.customStarsById.get(starId)
         if (star) {
-            star.startBlinking()
+            star.startGlowing()
         }
     }
 
@@ -133,7 +145,7 @@ export class Galaxy {
         if (!star || !star.obj) return
 
         const targetPosition = star.obj.position.clone()
-        const distance = 100
+        const distance = 15
 
         const direction = new THREE.Vector3()
         direction.subVectors(camera.position, targetPosition).normalize()
@@ -142,7 +154,7 @@ export class Galaxy {
 
         this.animateCameraTo(camera, orbit, newCameraPosition, targetPosition)
 
-        star.startBlinking()
+        star.startGlowing()
     }
 
     animateCameraTo(camera, orbit, targetPosition, lookAtPosition) {

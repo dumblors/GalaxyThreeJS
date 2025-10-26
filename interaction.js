@@ -7,6 +7,8 @@ export class InteractionManager {
         this.uiManager = uiManager
         this.raycaster = new THREE.Raycaster()
         this.mouse = new THREE.Vector2()
+        this.lastClickTime = 0
+        this.clickDelay = 300
 
         this.setupEventListeners()
     }
@@ -14,11 +16,11 @@ export class InteractionManager {
     setupEventListeners() {
         const canvas = document.getElementById('canvas')
 
-        canvas.addEventListener('click', (event) => this.onClick(event))
+        canvas.addEventListener('dblclick', (event) => this.onDoubleClick(event))
         canvas.addEventListener('mousemove', (event) => this.onMouseMove(event))
     }
 
-    onClick(event) {
+    onDoubleClick(event) {
         this.updateMousePosition(event)
 
         this.raycaster.setFromCamera(this.mouse, this.camera)

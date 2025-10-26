@@ -6,8 +6,11 @@ export class CustomStar extends Star {
         super(position)
         this.userData = userData
         this.isCustom = true
-        this.isBlinking = false
-        this.blinkStartTime = null
+        this.isGlowing = false
+        this.glowStartTime = null
+        this.originalColor = null
+        this.targetBrightness = 3.0
+        this.normalBrightness = 1.0
     }
 
     toThreeObject(scene) {
@@ -17,37 +20,60 @@ export class CustomStar extends Star {
             this.obj.userData = {
                 isCustomStar: true,
                 starId: this.userData.id,
-                starData: this.userData
+                starData: this.userData,
+                userId: this.userData.user_id
+            }
+
+            if (this.obj.material && this.obj.material.color) {
+                this.originalColor = this.obj.material.color.clone()
             }
         }
     }
 
-    startBlinking() {
-        this.isBlinking = true
-        this.blinkStartTime = Date.now()
+    startGlowing() {
+        this.isGlowing = true
+        this.glowStartTime = Date.now()
     }
 
-    updateBlinking() {
-        if (!this.isBlinking || !this.obj) return
+    stopGlowing() {
+        this.isGlowing = false
+        if (this.obj && this.obj.material && this.originalColor) {
+            this.obj.material.color.copy(this.originalColor)
+            this.obj.material.emissive.setScalar(0)
+        }
+    }
 
-        const elapsed = (Date.now() - this.blinkStartTime) / 1000
+    updateGlowing() {
+        if (!this.isGlowing || !this.obj || !this.obj.material) return
 
-        if (elapsed > 5) {
-            this.isBlinking = false
-            this.obj.material.opacity = 1
+        const elapsed = (Date.now() - this.glowStartTime) / 1000
+        const duration = 3.0
+
+        if (elapsed > duration) {
+            this.stopGlowing()
             return
         }
 
-        const frequency = 4
-        const opacity = 0.3 + 0.7 * Math.abs(Math.sin(elapsed * frequency * Math.PI))
-        this.obj.material.opacity = opacity
-        this.obj.material.transparent = true
+        const progress = elapsed / duration
+        let brightness
+
+        if (progress < 0.5) {
+            brightness = this.normalBrightness + (this.targetBrightness - this.normalBrightness) * (progress * 2)
+        } else {
+            brightness = this.targetBrightness - (this.targetBrightness - this.normalBrightness) * ((progress - 0.5) * 2)
+        }
+
+        if (this.originalColor) {
+            const glowColor = this.originalColor.clone().multiplyScalar(brightness)
+            this.obj.material.color.copy(glowColor)
+            this.obj.material.emissive.copy(this.originalColor).multiplyScalar(brightness * 0.5)
+        }
     }
 
     update(camera) {
         this.updateScale(camera)
-        if (this.isBlinking) {
-            this.updateBlinking()
+        if (this.isGlowing) {
+            this.updateGlowing()
         }
     }
 }
