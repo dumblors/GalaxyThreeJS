@@ -151,15 +151,26 @@ function renderPipeline() {
 
 }
 
-initThree()
-let axes = new THREE.AxesHelper(5.0)
-scene.add(axes)
+try {
+    initThree()
+    let axes = new THREE.AxesHelper(5.0)
+    scene.add(axes)
 
-galaxy = new Galaxy(scene)
+    galaxy = new Galaxy(scene)
 
-uiManager = new UIManager(galaxy, camera, orbit)
-window.uiManager = uiManager
+    uiManager = new UIManager(galaxy, camera, orbit)
+    window.uiManager = uiManager
 
-interactionManager = new InteractionManager(camera, scene, uiManager)
+    interactionManager = new InteractionManager(camera, scene, uiManager)
 
-requestAnimationFrame(render)
+    requestAnimationFrame(render)
+} catch (error) {
+    console.error('Initialization error:', error)
+    document.body.innerHTML = `
+        <div style="color: white; padding: 20px; font-family: monospace;">
+            <h2>Error loading application:</h2>
+            <pre>${error.message}</pre>
+            <pre>${error.stack}</pre>
+        </div>
+    `
+}

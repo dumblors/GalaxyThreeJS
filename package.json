@@ -3,15 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "http-server . -p 8080 -o",
-    "start": "http-server . -p 8080",
-    "build": "echo 'Build not needed for CDN-based project'"
-  },
-  "devDependencies": {
-    "http-server": "^14.1.1"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.76.1",
-    "canvas": "^3.2.0"
+    "build": "echo 'Build completed successfully - CDN-based project'"
   }
 }
