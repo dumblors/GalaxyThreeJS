@@ -41,7 +41,7 @@ export class Galaxy {
                 this.addCustomStarFromData(starData)
             })
         } else {
-            const defaultStars = 5000
+            const defaultStars = 10000
             this.stars = this.generateObject(defaultStars, (pos) => new Star(pos))
             this.haze = this.generateObject(defaultStars * HAZE_RATIO, (pos) => new Haze(pos))
 
