@@ -289,7 +289,7 @@ export class UIManager {
                 position_x: position.x,
                 position_y: position.y,
                 position_z: position.z,
-                color_hex: '#' + starTypes.color[starType].getHexString(),
+                color_hex: '#' + starTypes.color[starType].toString(16).padStart(6, '0'),
                 size: starTypes.size[starType]
             }
 
