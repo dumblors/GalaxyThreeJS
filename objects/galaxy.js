@@ -4,6 +4,7 @@ import { ARMS, ARM_X_DIST, ARM_X_MEAN, ARM_Y_DIST, ARM_Y_MEAN, CORE_X_DIST, CORE
 import { gaussianRandom, spiral } from './utils.js';
 import { Haze } from './haze.js';
 
+
 export class Galaxy {
 
     constructor(scene) {
