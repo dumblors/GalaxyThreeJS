@@ -6,6 +6,7 @@ import { clamp } from '../utils.js'
 const texture = new THREE.TextureLoader().load('../resources/sprite120.png')
 const materials = starTypes.color.map((color) => new THREE.SpriteMaterial({map: texture, color: color}))
 
+
 export class Star {
 
     constructor(position) {
