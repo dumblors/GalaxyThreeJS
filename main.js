@@ -1,10 +1,8 @@
 import * as THREE from 'three'
 
-// Data and visualization
 import { CompositionShader} from './shaders/CompositionShader.js'
 import { BASE_LAYER, BLOOM_LAYER, BLOOM_PARAMS, OVERLAY_LAYER } from "./config/renderConfig.js";
 
-// Rendering
 import { MapControls } from 'three/addons/controls/OrbitControls.js'
 
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -13,8 +11,10 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { Galaxy } from './objects/galaxy.js';
+import { UIManager } from './ui.js';
+import { InteractionManager } from './interaction.js';
 
-let canvas, renderer, camera, scene, orbit, baseComposer, bloomComposer, overlayComposer
+let canvas, renderer, camera, scene, orbit, baseComposer, bloomComposer, overlayComposer, galaxy, uiManager, interactionManager
 
 function initThree() {
 
@@ -155,6 +155,11 @@ initThree()
 let axes = new THREE.AxesHelper(5.0)
 scene.add(axes)
 
-let galaxy = new Galaxy(scene)
+galaxy = new Galaxy(scene)
+
+uiManager = new UIManager(galaxy, camera, orbit)
+window.uiManager = uiManager
+
+interactionManager = new InteractionManager(camera, scene, uiManager)
 
 requestAnimationFrame(render)
